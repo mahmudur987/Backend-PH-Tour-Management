@@ -1,21 +1,17 @@
 import { IUSER } from "./user.interface";
 import { User } from "./user.model";
 
-export  const user = payload;
-  const result = await User.create(user);
+export const createUser = async (payload: IUSER) => {
+  const result = await User.create(payload);
   return result;
 };
 
- const getAllUsers = async () => {
+const getAllUsers = async () => {
   const result = await User.find({});
   return result;
 };
 
-
-
-export const useServices={
+export const useServices = {
   createUser,
-  getAllUsers
-}
-
-
+  getAllUsers,
+};

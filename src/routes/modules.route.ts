@@ -10,6 +10,8 @@ const Routes = [
   },
 ];
 
-Routes.forEach((route) => {
-  router.use(route.path, route.route);
-});
+// Routes.forEach((route) => {
+//   router.use(route.path, route.route);
+// });
+
+router.use("/user", userRoute);
