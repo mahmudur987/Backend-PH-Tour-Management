@@ -2,10 +2,11 @@
 import mongoose from "mongoose";
 import app from "./app";
 import { envVariables } from "./config/env.config";
+import { seedSuperAdmin } from "./utils/seedSuperAdmin";
 
 const port = 5000;
 
-const uri = envVariables.Db_url;
+const uri = envVariables.DB_URL;
 
 const startServer = async () => {
   try {
@@ -15,8 +16,10 @@ const startServer = async () => {
     console.error("Not connect  to Mongodb", error);
   }
 };
-startServer();
-
+(() => {
+  startServer();
+  seedSuperAdmin();
+})();
 const server = app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
