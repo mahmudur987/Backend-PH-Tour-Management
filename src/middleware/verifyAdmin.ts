@@ -31,6 +31,7 @@ export const verifyAdmin =
       if (!authRole.includes(tokenVerify.role)) {
         throw new AppError(httpStatus.FORBIDDEN, "Unauthenticated user");
       }
+      req.user = tokenVerify;
       next();
     } catch (error) {
       next(error);

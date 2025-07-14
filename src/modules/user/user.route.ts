@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { userController } from "./user.controller";
 
-import { createUserZodSchema } from "./user.validate";
+import { createUserZodSchema, updateUserZodSchema } from "./user.validate";
 import { validateRequest } from "../../middleware/validateRequest";
 import { verifyAdmin } from "../../middleware/verifyAdmin";
 import { Role } from "./user.interface";
@@ -14,5 +14,11 @@ router.post(
   userController.createUser
 );
 router.get("/", verifyAdmin(Role.ADMIN), userController.getAllUsers);
+router.patch(
+  "/:id",
+  verifyAdmin(...Object.values(Role)),
+  validateRequest(updateUserZodSchema),
+  userController.updateUser
+);
 
 export const userRoute = router;

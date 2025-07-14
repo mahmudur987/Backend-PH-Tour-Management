@@ -30,8 +30,25 @@ const getAllUsers = catchAsync(
     });
   }
 );
+const updateUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
+    const payload = req.body;
+    const tokenVerify = req.user;
+
+    const result = await useServices.updateUser(userId, payload, tokenVerify);
+
+    sendResponse(res, {
+      statusCode: statusCode.CREATED,
+      success: true,
+      message: "user created successfully",
+      data: result,
+    });
+  }
+);
 
 export const userController = {
   createUser,
   getAllUsers,
+  updateUser,
 };
