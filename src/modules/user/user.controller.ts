@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { NextFunction, Request, Response } from "express";
 import statusCode from "http-status-codes";
 import { useServices } from "./user.service";

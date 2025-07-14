@@ -26,7 +26,7 @@ export interface IUSER {
   address?: string;
   isDeleted?: string;
   isActive?: IsActive;
-  isVerified?: string;
+  isVerified?: boolean;
   role?: Role;
   auths?: IAuthProvider[];
   booking?: Types.ObjectId[];

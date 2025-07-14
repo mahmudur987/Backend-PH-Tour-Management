@@ -1,25 +1,30 @@
 import dotenv from "dotenv";
 dotenv.config();
-interface EnvVariable {
-  Port: string;
-  Db_url: string;
-  Node_env: string;
-}
 
-const loadEnvVariable = () => {
-  const variables: string[] = ["PORT", "DB_URL", "NODE_ENV"];
+const requiredEnvVariables = [
+  "PORT",
+  "DB_URL",
+  "NODE_ENV",
+  "SUPER_ADMIN_PASSWORD",
+  "SUPER_ADMIN_EMAIL",
+] as const;
 
-  variables.forEach((x) => {
-    if (!process.env[x]) {
-      throw new Error("env variable not found");
+type RequiredEnv = (typeof requiredEnvVariables)[number];
+
+type EnvVariables = Record<RequiredEnv, string>;
+
+const loadEnvVariable = (): EnvVariables => {
+  const config: Partial<EnvVariables> = {};
+
+  requiredEnvVariables.forEach((key) => {
+    const value = process.env[key];
+    if (!value) {
+      throw new Error(`Missing required environment variable: ${key}`);
     }
+    config[key] = value;
   });
 
-  return {
-    Port: process.env.PORT as string,
-    Db_url: process.env.DB_URL as string,
-    Node_env: process.env.NODE_ENV as string,
-  };
+  return config as EnvVariables;
 };
 
-export const envVariables: EnvVariable = loadEnvVariable();
+export const envVariables = loadEnvVariable();
