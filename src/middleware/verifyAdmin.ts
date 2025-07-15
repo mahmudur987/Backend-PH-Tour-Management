@@ -5,11 +5,12 @@ import httpStatus from "http-status-codes";
 import AppError from "../errorHandler/AppError";
 import jwt from "jsonwebtoken";
 import { jwtSecrete } from "../modules/auth/auth.service";
-import { Role } from "../modules/user/user.interface";
-
+import { IsActive, Role } from "../modules/user/user.interface";
+import statusCode from "http-status-codes";
+import { User } from "../modules/user/user.model";
 export const verifyAdmin =
-  (...authRole) =>
-  (req: Request, res: Response, next: NextFunction) => {
+  (...authRole: String[]) =>
+  async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
 
@@ -28,6 +29,22 @@ export const verifyAdmin =
           "Admin verification failed for token"
         );
       }
+
+      const isUserExist = await User.findOne({ email: tokenVerify.email });
+
+      if (!isUserExist) {
+        throw new AppError(statusCode.BAD_REQUEST, "Email not exist");
+      }
+      if (
+        isUserExist.isActive === IsActive.BLOCKED ||
+        isUserExist.isActive === IsActive.INACTIVE
+      ) {
+        throw new AppError(statusCode.BAD_REQUEST, "user blocked");
+      }
+      if (isUserExist.isDeleted) {
+        throw new AppError(statusCode.BAD_REQUEST, "user deleted");
+      }
+
       if (!authRole.includes(tokenVerify.role)) {
         throw new AppError(httpStatus.FORBIDDEN, "Unauthenticated user");
       }
