@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsynch";
 import { TourService } from "./tour.service";
@@ -10,7 +11,7 @@ const createTour = catchAsync(
     sendResponse(res, {
       statusCode: statusCode.CREATED,
       success: true,
-      message: "Division created successfully",
+      message: "tour created successfully",
       data: result,
     });
   }
@@ -21,7 +22,7 @@ const getAllTour = catchAsync(
     sendResponse(res, {
       statusCode: statusCode.CREATED,
       success: true,
-      message: "Division created successfully",
+      message: "tour retrieve successfully",
       data: result,
     });
   }
@@ -32,7 +33,7 @@ const getTourById = catchAsync(
     sendResponse(res, {
       statusCode: statusCode.CREATED,
       success: true,
-      message: "Division created successfully",
+      message: "tour retrieve successfully",
       data: result,
     });
   }
