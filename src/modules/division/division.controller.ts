@@ -1,54 +1,46 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-
 import { NextFunction, Request, Response } from "express";
-import statusCode from "http-status-codes";
-import { useServices } from "./user.service";
 import { catchAsync } from "../../utils/catchAsynch";
+import { divisionServices } from "./division.services";
 import sendResponse from "../../utils/sendResponse";
-
-const createUser = catchAsync(
+import statusCode from "http-status-codes";
+const createDivisions = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await useServices.createUser(req.body);
+    const result = await divisionServices.createDivisions(req.body);
     sendResponse(res, {
       statusCode: statusCode.CREATED,
       success: true,
-      message: "user created successfully",
+      message: "Division created successfully",
+      data: result,
+    });
+  }
+);
+const getAllDivisions = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await divisionServices.getAllDivisions();
+    sendResponse(res, {
+      statusCode: statusCode.CREATED,
+      success: true,
+      message: "Division created successfully",
+      data: result,
+    });
+  }
+);
+const getDivisionById = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const result = await divisionServices.getDivisionById(id);
+    sendResponse(res, {
+      statusCode: statusCode.CREATED,
+      success: true,
+      message: "Division created successfully",
       data: result,
     });
   }
 );
 
-const getAllUsers = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const result = await useServices.getAllUsers();
-
-    sendResponse(res, {
-      statusCode: statusCode.CREATED,
-      success: true,
-      message: "user created successfully",
-      data: result,
-    });
-  }
-);
-const updateUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const userId = req.params.id;
-    const payload = req.body;
-    const tokenVerify = req.user;
-
-    const result = await useServices.updateUser(userId, payload, tokenVerify);
-
-    sendResponse(res, {
-      statusCode: statusCode.CREATED,
-      success: true,
-      message: "user created successfully",
-      data: result,
-    });
-  }
-);
-
-export const userController = {
-  createUser,
-  getAllUsers,
-  updateUser,
+export const divisionController = {
+  createDivisions,
+  getAllDivisions,
+  getDivisionById,
 };

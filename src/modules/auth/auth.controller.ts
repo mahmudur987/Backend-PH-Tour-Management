@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import statusCode from "http-status-codes";
 import { catchAsync } from "../../utils/catchAsynch";
 import { authServices } from "./auth.service";
-import sendResponse from "../../utils/sendResponce";
+import sendResponse from "../../utils/sendResponse";
 import { JwtPayload } from "jsonwebtoken";
 import AppError from "../../errorHandler/AppError";
 import { createUserToken } from "../../utils/createUserToken";
