@@ -8,26 +8,58 @@ import { JwtPayload } from "jsonwebtoken";
 import AppError from "../../errorHandler/AppError";
 import { createUserToken } from "../../utils/createUserToken";
 import { envVariables } from "../../config/env.config";
+import passport from "passport";
 
 const credentialLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await authServices.credentialLogin(req.body);
+    passport.authenticate("local", (err: any, user: any, info: any) => {
+      if (err) {
+        next(err);
+      }
+      if (!user) {
+        next(err);
+      }
 
-    res.cookie("refreshToken", result.refreshToken, {
-      httpOnly: true,
-      secure: false,
-    });
-    res.cookie("accessToken", result.accessToken, {
-      httpOnly: true,
-      secure: false,
-    });
+      const result = createUserToken(user);
 
-    sendResponse(res, {
-      statusCode: statusCode.CREATED,
-      success: true,
-      message: "Login successfully",
-      data: result,
-    });
+      res.cookie("refreshToken", result.refreshToken, {
+        httpOnly: true,
+        secure: false,
+      });
+      res.cookie("accessToken", result.accessToken, {
+        httpOnly: true,
+        secure: false,
+      });
+
+      sendResponse(res, {
+        statusCode: statusCode.CREATED,
+        success: true,
+        message: "Login successfully",
+        data: {
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+          user,
+        },
+      });
+    })(req, res, next);
+
+    // const result = await authServices.credentialLogin(req.body);
+
+    // res.cookie("refreshToken", result.refreshToken, {
+    //   httpOnly: true,
+    //   secure: false,
+    // });
+    // res.cookie("accessToken", result.accessToken, {
+    //   httpOnly: true,
+    //   secure: false,
+    // });
+
+    // sendResponse(res, {
+    //   statusCode: statusCode.CREATED,
+    //   success: true,
+    //   message: "Login successfully",
+    //   data: result,
+    // });
   }
 );
 const getNewAccessToken = catchAsync(
