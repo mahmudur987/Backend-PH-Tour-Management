@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { envVariables } from "../config/env.config";
-import { IUSER } from "../modules/user/user.interface";
+import { IUSER, Role } from "../modules/user/user.interface";
 import { User } from "../modules/user/user.model";
 
 export const seedSuperAdmin = async () => {
@@ -18,6 +18,7 @@ export const seedSuperAdmin = async () => {
       email: envVariables.SUPER_ADMIN_EMAIL,
       password: envVariables.SUPER_ADMIN_PASSWORD,
       isVerified: true,
+      role: Role.SUPER_ADMIN,
       auths: [
         { provider: "credential", providerId: envVariables.SUPER_ADMIN_EMAIL },
       ],

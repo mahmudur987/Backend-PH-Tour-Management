@@ -13,7 +13,7 @@ router.post(
   validateRequest(createUserZodSchema),
   userController.createUser
 );
-router.get("/", verifyAdmin(Role.ADMIN), userController.getAllUsers);
+router.get("/", userController.getAllUsers);
 router.patch(
   "/:id",
   verifyAdmin(...Object.values(Role)),
