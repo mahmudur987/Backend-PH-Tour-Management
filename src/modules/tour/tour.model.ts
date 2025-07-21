@@ -4,7 +4,11 @@ import { ITour } from "./tour.interface";
 const tourSchema = new Schema<ITour>(
   {
     title: { type: String, required: true },
+<<<<<<< HEAD
     slug: { type: String, unique: true },
+=======
+    slug: { type: String, required: true, unique: true },
+>>>>>>> a8f352ed112d4816a66845392bd4d499c22a57e9
     description: { type: String },
     images: { type: [String], default: [] },
     location: { type: String },
@@ -32,6 +36,7 @@ const tourSchema = new Schema<ITour>(
     timestamps: true,
   }
 );
+<<<<<<< HEAD
 // Removed import of Tour to avoid merged declaration error
 
 tourSchema.pre("save", async function (next) {
@@ -68,5 +73,7 @@ tourSchema.pre("findOneAndUpdate", async function (next) {
 
   next();
 });
+=======
+>>>>>>> a8f352ed112d4816a66845392bd4d499c22a57e9
 
 export const Tour = model<ITour>("Tour", tourSchema);

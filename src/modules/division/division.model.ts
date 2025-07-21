@@ -13,6 +13,7 @@ const divisionSchema = new Schema<IDivision>(
   }
 );
 
+<<<<<<< HEAD
 divisionSchema.pre("save", async function (next) {
   if (this.isModified("name")) {
     const baseSlug = this.name.toLowerCase().split(" ").join("-") + "-division";
@@ -49,4 +50,6 @@ divisionSchema.pre("findOneAndUpdate", async function (next) {
   next();
 });
 
+=======
+>>>>>>> a8f352ed112d4816a66845392bd4d499c22a57e9
 export const Division = model<IDivision>("Division", divisionSchema);

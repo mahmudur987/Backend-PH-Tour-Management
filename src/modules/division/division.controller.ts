@@ -38,6 +38,7 @@ const getDivisionById = catchAsync(
     });
   }
 );
+<<<<<<< HEAD
 const updateDivision = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
@@ -51,10 +52,15 @@ const updateDivision = catchAsync(
     });
   }
 );
+=======
+>>>>>>> a8f352ed112d4816a66845392bd4d499c22a57e9
 
 export const divisionController = {
   createDivisions,
   getAllDivisions,
   getDivisionById,
+<<<<<<< HEAD
   updateDivision,
+=======
+>>>>>>> a8f352ed112d4816a66845392bd4d499c22a57e9
 };

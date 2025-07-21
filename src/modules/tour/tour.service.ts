@@ -1,10 +1,16 @@
+<<<<<<< HEAD
 import { string } from "zod";
+=======
+>>>>>>> a8f352ed112d4816a66845392bd4d499c22a57e9
 import AppError from "../../errorHandler/AppError";
 import { Division } from "../division/division.model";
 import { TourType } from "../tourType/tourType.model";
 import { ITour } from "./tour.interface";
 import { Tour } from "./tour.model";
+<<<<<<< HEAD
 import { QueryBuilder } from "../../utils/QueryBuilder";
+=======
+>>>>>>> a8f352ed112d4816a66845392bd4d499c22a57e9
 
 const createTour = async (payload: ITour) => {
   const divisionExists = await Division.findById(payload.division);
@@ -17,6 +23,7 @@ const createTour = async (payload: ITour) => {
   return result;
 };
 
+<<<<<<< HEAD
 // // getAllTour
 // const getAllTour = async (query: Record<string, string>) => {
 //   const {
@@ -86,6 +93,12 @@ const getAllTour = async (query: Record<string, string>) => {
     meta,
     data,
   };
+=======
+// getAllTour
+const getAllTour = async () => {
+  const result = await Tour.find({});
+  return result;
+>>>>>>> a8f352ed112d4816a66845392bd4d499c22a57e9
 };
 
 // getTour By Id
@@ -95,6 +108,7 @@ const getTourById = async (id: string) => {
   return result;
 };
 
+<<<<<<< HEAD
 const updateTour = async (id: string, payload: Partial<ITour>) => {
   const isTourExist = await Tour.findById(id);
   if (!isTourExist) {
@@ -113,10 +127,15 @@ const deleteTour = async (id: string) => {
   return result;
 };
 
+=======
+>>>>>>> a8f352ed112d4816a66845392bd4d499c22a57e9
 export const TourService = {
   createTour,
   getAllTour,
   getTourById,
+<<<<<<< HEAD
   updateTour,
   deleteTour,
+=======
+>>>>>>> a8f352ed112d4816a66845392bd4d499c22a57e9
 };
