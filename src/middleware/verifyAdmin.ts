@@ -5,11 +5,20 @@ import httpStatus from "http-status-codes";
 import AppError from "../errorHandler/AppError";
 import jwt from "jsonwebtoken";
 import { jwtSecrete } from "../modules/auth/auth.service";
+<<<<<<< Updated upstream
 import { Role } from "../modules/user/user.interface";
 
 export const verifyAdmin =
   (...authRole) =>
   (req: Request, res: Response, next: NextFunction) => {
+=======
+import { IsActive } from "../modules/user/user.interface";
+import statusCode from "http-status-codes";
+import { User } from "../modules/user/user.model";
+export const verifyAdmin =
+  (...authRole: string[]) =>
+  async (req: Request, res: Response, next: NextFunction) => {
+>>>>>>> Stashed changes
     try {
       const token = req.headers.authorization;
 
