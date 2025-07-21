@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsynch";
@@ -72,4 +70,3 @@ export const tourController = {
   updateTour,
   deleteTour,
 };
->>>>>>> Stashed changes

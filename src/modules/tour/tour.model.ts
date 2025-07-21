@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import { model, Schema } from "mongoose";
 import { ITour } from "./tour.interface";
 
@@ -72,4 +70,3 @@ tourSchema.pre("findOneAndUpdate", async function (next) {
 });
 
 export const Tour = model<ITour>("Tour", tourSchema);
->>>>>>> Stashed changes
