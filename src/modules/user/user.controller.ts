@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import statusCode from "http-status-codes";
 import { useServices } from "./user.service";
 import { catchAsync } from "../../utils/catchAsynch";
-import sendResponse from "../../utils/sendResponce";
+import sendResponse from "../../utils/sendResponse";
 
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
