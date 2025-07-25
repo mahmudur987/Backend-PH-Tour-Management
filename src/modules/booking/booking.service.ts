@@ -5,6 +5,8 @@ import { User } from "../user/user.model";
 import { BookingStatus, IBooking } from "./booking.interface";
 import { Booking } from "./booking.model";
 import { Payment } from "../payment/payment.model";
+import { ISslCommerz } from "../../ssl_commerz/ssslCommerz.interface";
+import { sslCommerzService } from "../../ssl_commerz/sslCommerz.service";
 
 const getTransactionId = () => {
   return `tran_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
@@ -42,12 +44,14 @@ const createBooking = async (booking: Partial<IBooking>, userId: string) => {
     );
 
     // Create payment
+
+    const totalPayment = tour.costFrom * (booking.guestCount || 1);
     const [payment] = await Payment.create(
       [
         {
           booking: newBooking._id,
           transactionId: getTransactionId(),
-          amount: tour.costFrom * (booking.guestCount || 1),
+          amount: totalPayment,
           status: "UNPAID",
         },
       ],
@@ -59,12 +63,28 @@ const createBooking = async (booking: Partial<IBooking>, userId: string) => {
       newBooking._id,
       { payment: payment._id },
       { new: true, runValidators: true, session }
-    ).populate("payment");
+    )
+      .populate("payment")
+      .populate("user");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { email, phone, address, name } = updatedBooking?.user as any;
 
+    const sslPayload: ISslCommerz = {
+      address,
+      amount: totalPayment,
+      email,
+      name,
+      phone,
+      transactionId: payment.transactionId,
+    };
+    const sslPayment = await sslCommerzService.sslPaymentInit(sslPayload);
     await session.commitTransaction();
     session.endSession();
 
-    return updatedBooking;
+    return {
+      paymentUrl: sslPayment.GatewayPageURL,
+      booking: updatedBooking,
+    };
   } catch (error) {
     console.error("Booking creation failed:", error);
     await session.abortTransaction();

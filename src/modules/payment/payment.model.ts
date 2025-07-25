@@ -1,6 +1,5 @@
 import { model, Schema } from "mongoose";
 import { IPayment, paymentStatus } from "./payment.interface";
-import { object } from "zod";
 
 const paymentSchema = new Schema<IPayment>({
   booking: {
