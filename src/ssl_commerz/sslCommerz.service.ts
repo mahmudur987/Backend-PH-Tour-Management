@@ -43,7 +43,7 @@ const sslPaymentInit = async (payload: ISslCommerz) => {
       value_c: "ref003_C",
       value_d: "ref004_D",
     };
-    console.log(data);
+    // console.log(data);
     const response = await axios({
       method: "post",
       url: envVariables.SSL_PAYMENT_API,
@@ -54,7 +54,7 @@ const sslPaymentInit = async (payload: ISslCommerz) => {
     // const response = await axios.post(envVariables.SSL_PAYMENT_API, data, {
     //   headers: { "Content-Type": "application/x-www-from-urlencoded" },
     // });
-    console.log("at ssl service", (await response).data);
+    // console.log("at ssl service", (await response).data);
     return response.data;
   } catch (error) {
     console.log("at ssl service error", error);
