@@ -2,9 +2,6 @@ import { z } from "zod";
 import { BookingStatus } from "./booking.interface";
 
 export const createBookingZodSchema = z.object({
-  user: z.string().refine((id) => Boolean(id), {
-    message: "User id is invalid",
-  }),
   tour: z.string().refine((id) => Boolean(id), {
     message: "Tour id is invalid",
   }),
@@ -21,11 +18,10 @@ export const createBookingZodSchema = z.object({
       message: `Booking status must be one of ${Object.values(
         BookingStatus
       ).join(", ")}`,
-    }),
+    })
+    .optional(),
 });
 
 export const updateBookingZodSchema = z.object({
-  payment: z.string().uuid().optional(),
-  guestCount: createBookingZodSchema.shape.guestCount.optional(),
   bookingStatus: createBookingZodSchema.shape.bookingStatus.optional(),
 });
