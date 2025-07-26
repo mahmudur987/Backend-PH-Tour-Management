@@ -26,6 +26,9 @@ const requiredEnvVariables = [
   "SSL_SUCCESS_FRONTEND_URL",
   "SSL_FAIL_FRONTEND_URL",
   "SSL_CANCEL_FRONTEND_URL",
+  "CLOUDINARY_CLOUD_NAME",
+  "CLOUDINARY_API_KEY",
+  "CLOUDINARY_API_SECRET",
 ] as const;
 
 type RequiredEnv = (typeof requiredEnvVariables)[number];

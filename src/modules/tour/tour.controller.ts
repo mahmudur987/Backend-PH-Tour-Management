@@ -7,7 +7,13 @@ import sendResponse from "../../utils/sendResponse";
 
 const createTour = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await TourService.createTour(req.body);
+    const payload = {
+      ...JSON.parse(req.body.data),
+      images: (req.files as Express.Multer.File[])?.map((file) => file.path),
+    };
+    console.log(payload);
+    const result = await TourService.createTour(payload);
+    // const result = await TourService.createTour(req.body);
     sendResponse(res, {
       statusCode: statusCode.CREATED,
       success: true,
