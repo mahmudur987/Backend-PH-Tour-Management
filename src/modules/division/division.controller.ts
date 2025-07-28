@@ -4,9 +4,15 @@ import { catchAsync } from "../../utils/catchAsynch";
 import { divisionServices } from "./division.services";
 import sendResponse from "../../utils/sendResponse";
 import statusCode from "http-status-codes";
+import { IDivision } from "./division.interface";
 const createDivisions = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await divisionServices.createDivisions(req.body);
+    const payload: IDivision = {
+      ...req.body,
+      thumbnail: req.file?.path,
+    };
+
+    const result = await divisionServices.createDivisions(payload);
     sendResponse(res, {
       statusCode: statusCode.CREATED,
       success: true,

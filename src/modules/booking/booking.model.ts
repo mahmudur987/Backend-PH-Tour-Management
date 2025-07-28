@@ -11,7 +11,6 @@ const bookingSchema = new Schema<IBooking>(
       type: String,
       enum: Object.values(BookingStatus),
       default: BookingStatus.PENDING,
-      required: true,
     },
   },
   { timestamps: true }
