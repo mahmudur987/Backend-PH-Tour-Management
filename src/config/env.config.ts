@@ -29,6 +29,11 @@ const requiredEnvVariables = [
   "CLOUDINARY_CLOUD_NAME",
   "CLOUDINARY_API_KEY",
   "CLOUDINARY_API_SECRET",
+  "SMTP_HOST",
+  "SMTP_PORT",
+  "SMTP_USER",
+  "SMTP_PASS",
+  "SMTP_FROM",
 ] as const;
 
 type RequiredEnv = (typeof requiredEnvVariables)[number];

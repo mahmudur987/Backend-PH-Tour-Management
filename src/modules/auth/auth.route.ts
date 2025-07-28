@@ -9,11 +9,10 @@ import { envVariables } from "../../config/env.config";
 const route = Router();
 
 route.post("/login", authController.credentialLogin);
-
 route.post("/refreshToken", authController.getNewAccessToken);
 route.post("/logout", authController.logOut);
 route.post(
-  "/resetPassword",
+  "/changePassword",
   verifyAdmin(...Object.values(Role)),
   authController.changePassword
 );
@@ -22,6 +21,13 @@ route.patch(
   verifyAdmin(...Object.values(Role)),
   authController.setPassword
 );
+route.post("/forget-password", authController.forgetPassword);
+route.post(
+  "/reset-password",
+  verifyAdmin(...Object.values(Role)),
+  authController.resetPassword
+);
+
 route.get("/google", async (req, res, next) => {
   const redirect = req.query.redirect;
   passport.authenticate("google", {
@@ -29,11 +35,6 @@ route.get("/google", async (req, res, next) => {
     state: redirect as string,
   })(req, res, next);
 });
-// route.get(
-//   "/google/callback",
-//   passport.authenticate("google", { failureRedirect: "/login" }),
-//   authController.googleCallbackController
-// );
 
 route.get("/google/callback", (req, res, next) => {
   passport.authenticate(
@@ -60,5 +61,9 @@ route.get("/google/callback", (req, res, next) => {
     }
   )(req, res, next);
 });
-
+// route.get(
+//   "/google/callback",
+//   passport.authenticate("google", { failureRedirect: "/login" }),
+//   authController.googleCallbackController
+// );
 export const authRoute = route;

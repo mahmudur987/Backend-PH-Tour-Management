@@ -8,7 +8,7 @@ import { jwtSecrete } from "../modules/auth/auth.service";
 import statusCode from "http-status-codes";
 import { User } from "../modules/user/user.model";
 import { UserValidationResult, validateUserStatus } from "./validateUserStatus";
-export const verifyAdmin =
+export const CheckRole =
   (...authRole: string[]) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {

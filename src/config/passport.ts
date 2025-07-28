@@ -77,6 +77,10 @@ import {
 import { User } from "../modules/user/user.model";
 import { Role, IsActive } from "../modules/user/user.constant";
 import { envVariables } from "../config/env";
+import {
+  UserValidationResult,
+  validateUserStatus,
+} from "../middleware/validateUserStatus";
 
 passport.use(
   new GoogleStrategy(
@@ -120,18 +124,10 @@ passport.use(
           return done(null, user);
         }
 
-        // Status checks
-        if (
-          user.isActive === IsActive.BLOCKED ||
-          user.isActive === IsActive.INACTIVE
-        ) {
-          return done(null, false, { message: "User is blocked or inactive" });
-        }
-        if (user.isDeleted) {
-          return done(null, false, { message: "User is deleted" });
-        }
-        if (!user.isVerified) {
-          return done(null, false, { message: "User is not verified" });
+        const validation: UserValidationResult = validateUserStatus(user);
+
+        if (!validation.isValid) {
+          return done(null, false, { message: validation.message });
         }
 
         // Ensure google auth is attached (if they registered via credential before)
