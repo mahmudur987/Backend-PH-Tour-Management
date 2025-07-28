@@ -9,6 +9,11 @@ router.post(
   multerUpload.array("files"),
   tourController.createTour
 );
+router.patch(
+  "/updateTour/:id",
+  multerUpload.array("files"),
+  tourController.updateTour
+);
 router.get("/", tourController.getAllTour);
 router.get("/:id", tourController.getTourById);
 

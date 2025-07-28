@@ -1,5 +1,5 @@
 import AppError from "../../errorHandler/AppError";
-import { IsActive, IUSER } from "../user/user.interface";
+import { IAuthProvider, IsActive, IUSER } from "../user/user.interface";
 import { User } from "../user/user.model";
 import statusCode from "http-status-codes";
 import bcrypt from "bcryptjs";
@@ -84,6 +84,80 @@ const getNewAccessToken = async (refreshToken: string) => {
     accessToken: Token.accessToken,
   };
 };
+export const setPassword = async (userId: string, plainPassword: string) => {
+  // Step 1: Find user by decoded token ID
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new AppError(statusCode.NOT_FOUND, "User not found.");
+  }
+  if (
+    user.password &&
+    user.auths?.some((providerObject) => providerObject.provider === "google")
+  ) {
+    throw new AppError(
+      statusCode.BAD_REQUEST,
+      "you should login by google and set password for credential."
+    );
+  }
+
+  // Step 4: Hash new password and update user
+  const hashedPassword = await bcrypt.hash(plainPassword, 10);
+  const auths = [
+    ...(user.auths as IAuthProvider[]),
+    { provider: "credential", providerId: user.email as string },
+  ];
+
+  user.password = hashedPassword;
+  user.auths = auths;
+  await user.save();
+
+  return {
+    message: "Password has been set successfully.",
+  };
+};
+
+export const changePassword = async (
+  oldPassword: string,
+  newPassword: string,
+  decodedToken: JwtPayload
+) => {
+  // Step 1: Find user by decoded token ID
+  const user = await User.findById(decodedToken._id);
+  if (!user) {
+    throw new AppError(statusCode.NOT_FOUND, "User not found.");
+  }
+
+  // Step 2: Compare old password
+  const isPasswordMatch = await bcrypt.compare(
+    oldPassword,
+    user.password as string
+  );
+
+  if (!isPasswordMatch) {
+    throw new AppError(statusCode.UNAUTHORIZED, "Old password is incorrect.");
+  }
+
+  // Step 3: Check if new password is same as old password
+  const isSameAsOld = await bcrypt.compare(
+    newPassword,
+    user.password as string
+  );
+  if (isSameAsOld) {
+    throw new AppError(
+      statusCode.BAD_REQUEST,
+      "New password must be different from the old password."
+    );
+  }
+
+  // Step 4: Hash new password and update user
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+  user.password = hashedPassword;
+  await user.save();
+
+  return {
+    message: "Password has been reset successfully.",
+  };
+};
 export const resetPassword = async (
   oldPassword: string,
   newPassword: string,
@@ -126,9 +200,10 @@ export const resetPassword = async (
     message: "Password has been reset successfully.",
   };
 };
-
 export const authServices = {
   credentialLogin,
   getNewAccessToken,
   resetPassword,
+  changePassword,
+  setPassword,
 };

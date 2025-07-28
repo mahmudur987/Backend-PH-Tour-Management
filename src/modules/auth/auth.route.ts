@@ -4,6 +4,7 @@ import { authController } from "./auth.controller";
 import { verifyAdmin } from "../../middleware/verifyAdmin";
 import { Role } from "../user/user.interface";
 import passport from "passport";
+import { envVariables } from "../../config/env.config";
 
 const route = Router();
 
@@ -14,7 +15,12 @@ route.post("/logout", authController.logOut);
 route.post(
   "/resetPassword",
   verifyAdmin(...Object.values(Role)),
-  authController.resetPassword
+  authController.changePassword
+);
+route.patch(
+  "/setPassword",
+  verifyAdmin(...Object.values(Role)),
+  authController.setPassword
 );
 route.get("/google", async (req, res, next) => {
   const redirect = req.query.redirect;
@@ -23,9 +29,36 @@ route.get("/google", async (req, res, next) => {
     state: redirect as string,
   })(req, res, next);
 });
-route.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  authController.googleCallbackController
-);
+// route.get(
+//   "/google/callback",
+//   passport.authenticate("google", { failureRedirect: "/login" }),
+//   authController.googleCallbackController
+// );
+
+route.get("/google/callback", (req, res, next) => {
+  passport.authenticate(
+    "google",
+    { failureRedirect: "/login" },
+    (err, user, info) => {
+      if (err) {
+        console.error("Google authentication error:", err);
+        return next(err);
+      }
+
+      if (!user) {
+        // Handle error message from `done(null, false, { message: "..." })`
+        return res.redirect(
+          `${envVariables.FRONT_END_URL}/login?error=${encodeURIComponent(
+            info?.message || "Google login failed"
+          )}`
+        );
+      }
+
+      // Manually attach user to req for controller
+      req.user = user;
+      return authController.googleCallbackController(req, res, next);
+    }
+  )(req, res, next);
+});
+
 export const authRoute = route;

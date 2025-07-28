@@ -9,7 +9,7 @@ import { IsActive, Role } from "../modules/user/user.interface";
 import statusCode from "http-status-codes";
 import { User } from "../modules/user/user.model";
 export const verifyAdmin =
-  (...authRole: String[]) =>
+  (...authRole: string[]) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.headers.authorization;
@@ -43,6 +43,9 @@ export const verifyAdmin =
       }
       if (isUserExist.isDeleted) {
         throw new AppError(statusCode.BAD_REQUEST, "user deleted");
+      }
+      if (isUserExist.isVerified === false) {
+        throw new AppError(statusCode.BAD_REQUEST, "user not verified");
       }
 
       if (!authRole.includes(tokenVerify.role)) {

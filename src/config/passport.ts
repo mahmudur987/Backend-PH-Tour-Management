@@ -7,10 +7,10 @@ import {
 } from "passport-google-oauth20";
 import { envVariables } from "./env.config";
 import { User } from "../modules/user/user.model";
-import { Role } from "../modules/user/user.interface";
+import { IsActive, IUSER, Role } from "../modules/user/user.interface";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
-
+// credential
 passport.use(
   new LocalStrategy(
     {
@@ -24,13 +24,30 @@ passport.use(
         if (!isUserExist) {
           return done(null, false, { message: "user not exist" });
         }
-        const isGoogleAuthenticate = isUserExist.auths?.some(
+        if (
+          isUserExist.isActive === IsActive.BLOCKED ||
+          isUserExist.isActive === IsActive.INACTIVE
+        ) {
+          return done(null, false, { message: "user blocked" });
+        }
+        if (isUserExist.isDeleted) {
+          return done(null, false, { message: "user deleted" });
+        }
+        if (isUserExist.isVerified === false) {
+          return done(null, false, { message: "user not verified" });
+        }
+        const hasGoogle = isUserExist.auths?.some(
           (providerObject) => providerObject.provider === "google"
         );
-        if (isGoogleAuthenticate) {
+
+        const hasCredential = isUserExist.auths?.some(
+          (providerObject) => providerObject.provider === "credential"
+        );
+
+        if (hasGoogle && !hasCredential) {
           return done(null, false, {
             message:
-              "you should login by google and set password for credential",
+              "You should login using Google and set a password for credential login.",
           });
         }
 
@@ -50,36 +67,48 @@ passport.use(
     }
   )
 );
+// google
+import passport from "passport";
+import {
+  Strategy as GoogleStrategy,
+  Profile,
+  VerifyCallback,
+} from "passport-google-oauth20";
+import { User } from "../modules/user/user.model";
+import { Role, IsActive } from "../modules/user/user.constant";
+import { envVariables } from "../config/env";
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: envVariables.GOOGLE_CLIENT_ID,
       clientSecret: envVariables.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:5000/api/v1/auth/google/callback",
+      callbackURL: envVariables.GOOGLE_CALLBACK_URL, // <- use env
     },
     async (
-      accessToken: string,
-      refreshToken: string,
+      _accessToken: string,
+      _refreshToken: string,
       profile: Profile,
       done: VerifyCallback
     ) => {
       try {
-        const email = profile?.emails?.[0]?.value;
-
+        const email = profile.emails?.[0]?.value?.toLowerCase();
         if (!email) {
-          return done(null, false, { message: "No email found" });
+          return done(null, false, { message: "No email found from Google" });
         }
 
+        // Try to find the user
         let user = await User.findOne({ email });
 
+        // If user does not exist, create one
         if (!user) {
           user = await User.create({
             email,
             name: profile.displayName,
-            picture: profile.photos?.[0].value,
+            picture: profile.photos?.[0]?.value,
             role: Role.USER,
             isVerified: true,
+            isActive: IsActive.ACTIVE,
             auths: [
               {
                 provider: "google",
@@ -87,12 +116,45 @@ passport.use(
               },
             ],
           });
+
+          return done(null, user);
         }
 
-        return done(null, user);
+        // Status checks
+        if (
+          user.isActive === IsActive.BLOCKED ||
+          user.isActive === IsActive.INACTIVE
+        ) {
+          return done(null, false, { message: "User is blocked or inactive" });
+        }
+        if (user.isDeleted) {
+          return done(null, false, { message: "User is deleted" });
+        }
+        if (!user.isVerified) {
+          return done(null, false, { message: "User is not verified" });
+        }
+
+        // Ensure google auth is attached (if they registered via credential before)
+        const hasGoogle = user.auths?.some((a) => a.provider === "google");
+        if (!hasGoogle) {
+          await User.updateOne(
+            { _id: user._id },
+            {
+              $addToSet: {
+                auths: {
+                  provider: "google",
+                  providerId: profile.id,
+                },
+              },
+            }
+          );
+          user = await User.findById(user._id); // refresh
+        }
+
+        return done(null, user as IUSER); // ✅ return your app user, not the Google profile
       } catch (err) {
-        console.error("google strategy Error", err);
-        done(err);
+        console.error("Google strategy error:", err);
+        return done(err as Error);
       }
     }
   )

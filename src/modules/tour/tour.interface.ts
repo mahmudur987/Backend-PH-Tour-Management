@@ -17,4 +17,5 @@ export interface ITour {
   minAge?: number;
   division: Types.ObjectId;
   tourType: Types.ObjectId;
+  deleteImages?: string[];
 }
