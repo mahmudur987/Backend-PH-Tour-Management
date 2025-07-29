@@ -1,7 +1,7 @@
 import { createClient } from "redis";
 import { envVariables } from "./env.config";
 
-const client = createClient({
+export const redisClient = createClient({
   username: envVariables.REDIS_USER_NAME,
   password: envVariables.REDIS_PASSWORD,
   socket: {
@@ -10,10 +10,10 @@ const client = createClient({
   },
 });
 
-client.on("error", (err) => console.log("Redis Client Error", err));
+redisClient.on("error", (err) => console.log("Redis redisClient Error", err));
 const RedisConnect = async () => {
-  if (!client.isOpen) {
-    await client.connect();
+  if (!redisClient.isOpen) {
+    await redisClient.connect();
     console.log("Redis client connected");
   }
 
