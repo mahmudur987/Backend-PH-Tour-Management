@@ -34,6 +34,10 @@ const requiredEnvVariables = [
   "SMTP_USER",
   "SMTP_PASS",
   "SMTP_FROM",
+  "REDIS_USER_NAME",
+  "REDIS_PASSWORD",
+  "REDIS_HOST",
+  "REDIS_PORT",
 ] as const;
 
 type RequiredEnv = (typeof requiredEnvVariables)[number];

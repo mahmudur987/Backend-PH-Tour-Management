@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import app from "./app";
 import { envVariables } from "./config/env.config";
 import { seedSuperAdmin } from "./utils/seedSuperAdmin";
+import RedisConnect from "./config/redis.config";
 
 const port = 5000;
 
@@ -17,6 +18,7 @@ const startServer = async () => {
   }
 };
 (() => {
+  RedisConnect();
   startServer();
   seedSuperAdmin();
 })();
