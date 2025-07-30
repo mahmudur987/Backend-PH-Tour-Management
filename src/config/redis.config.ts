@@ -16,10 +16,6 @@ const RedisConnect = async () => {
     await redisClient.connect();
     console.log("Redis client connected");
   }
-
-  // await client.set("foo", "bar");
-  // const result = await client.get("foo");
-  // console.log(result); // >>> bar
 };
 
 export default RedisConnect;

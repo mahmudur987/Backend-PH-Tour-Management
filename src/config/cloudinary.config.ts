@@ -2,7 +2,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { envVariables } from "./env.config";
 import AppError from "../errorHandler/AppError";
-
+import stream from "stream";
 cloudinary.config({
   cloud_name: envVariables.CLOUDINARY_CLOUD_NAME,
   api_key: envVariables.CLOUDINARY_API_KEY,
@@ -28,5 +28,44 @@ export const deleteImageFromCLoudinary = async (url: string) => {
     throw new AppError(401, "Cloudinary image deletion failed", error.message);
   }
 };
+export const uploadBufferToCloudinary = async (
+  buffer: Buffer,
+  fileName: string
+): Promise<UploadApiResponse | undefined> => {
+  try {
+    return new Promise((resolve, reject) => {
+      const public_id = `pdf/${fileName}-${Date.now()}`;
+
+      const bufferStream = new stream.PassThrough();
+      bufferStream.end(buffer);
+
+      cloudinary.uploader
+        .upload_stream(
+          {
+            resource_type: "auto",
+            public_id: public_id,
+            folder: "pdf",
+          },
+          (error, result) => {
+            if (error) {
+              return reject(error);
+            }
+            resolve(result);
+          }
+        )
+        .end(buffer);
+    });
+  } catch (error: any) {
+    console.log(error);
+    throw new AppError(401, `Error uploading file ${error.message}`);
+  }
+};
 
 export const cloudinaryUpload = cloudinary;
+
+// const uploadToCloudinary = cloudinary.uploader.upload()
+
+//
+
+//Multer storage cloudinary
+//Amader folder -> image -> form data -> File -> Multer -> storage in cloudinary -> url ->  req.file  -> url  -> mongoose -> mongodb

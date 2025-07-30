@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { uploadBufferToCloudinary } from "../../config/cloudinary.config";
 import AppError from "../../errorHandler/AppError";
 import { sslCommerzService } from "../../ssl_commerz/sslCommerz.service";
+import { generatePdf, IInvoiceData } from "../../utils/invoice";
+import { sendmail } from "../../utils/sendEmail";
 import { BookingStatus } from "../booking/booking.interface";
 import { Booking } from "../booking/booking.model";
+import { ITour } from "../tour/tour.interface";
+import { IUSER } from "../user/user.interface";
 import { paymentStatus } from "./payment.interface";
 import { Payment } from "./payment.model";
 
@@ -29,11 +34,53 @@ const successPayment = async (query: Record<string, string>) => {
       payment.booking, // booking field likely stores ObjectId
       { bookingStatus: BookingStatus.CONFIRMED },
       { new: true, runValidators: true, session }
-    );
+    )
+      .populate("tour")
+      .populate("user");
 
     if (!updatedBooking) {
       throw new AppError(404, "Booking not found");
     }
+
+    const invoiceData: IInvoiceData = {
+      bookingDate: updatedBooking?.createdAt as Date,
+      guestCount: updatedBooking.guestCount,
+      totalAmount: payment.amount,
+      tourTitle: (updatedBooking.tour as unknown as ITour).title,
+      transactionId: payment.transactionId,
+      userName: (updatedBooking.user as unknown as IUSER).name,
+    };
+
+    const pdfBuffer = await generatePdf(invoiceData);
+
+    const cloudinaryResult = await uploadBufferToCloudinary(
+      pdfBuffer,
+      "invoice"
+    );
+
+    if (!cloudinaryResult) {
+      throw new AppError(401, "Error uploading pdf");
+    }
+
+    await Payment.findByIdAndUpdate(
+      payment._id,
+      { invoiceUrl: cloudinaryResult.secure_url },
+      { runValidators: true, session }
+    );
+
+    await sendmail({
+      to: (updatedBooking.user as unknown as IUSER).email,
+      subject: "Your Booking Invoice",
+      templateName: "invoice",
+      templateData: invoiceData,
+      attachments: [
+        {
+          filename: "invoice.pdf",
+          content: pdfBuffer,
+          contentType: "application/pdf",
+        },
+      ],
+    });
 
     await session.commitTransaction();
     session.endSession();
