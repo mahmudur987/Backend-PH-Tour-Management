@@ -2,6 +2,7 @@
 import { uploadBufferToCloudinary } from "../../config/cloudinary.config";
 import AppError from "../../errorHandler/AppError";
 import { sslCommerzService } from "../../ssl_commerz/sslCommerz.service";
+import { ISslCommerz } from "../../ssl_commerz/ssslCommerz.interface";
 import { generatePdf, IInvoiceData } from "../../utils/invoice";
 import { sendmail } from "../../utils/sendEmail";
 import { BookingStatus } from "../booking/booking.interface";
@@ -43,7 +44,7 @@ const successPayment = async (query: Record<string, string>) => {
     }
 
     const invoiceData: IInvoiceData = {
-      bookingDate: updatedBooking?.createdAt as Date,
+      bookingDate: updatedBooking?.createdAt as unknown as Date,
       guestCount: updatedBooking.guestCount,
       totalAmount: payment.amount,
       tourTitle: (updatedBooking.tour as unknown as ITour).title,

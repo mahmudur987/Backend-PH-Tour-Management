@@ -10,6 +10,10 @@ import { User } from "../modules/user/user.model";
 import { IsActive, IUSER, Role } from "../modules/user/user.interface";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcryptjs";
+import {
+  UserValidationResult,
+  validateUserStatus,
+} from "../middleware/validateUserStatus";
 // credential
 passport.use(
   new LocalStrategy(
@@ -68,19 +72,6 @@ passport.use(
   )
 );
 // google
-import passport from "passport";
-import {
-  Strategy as GoogleStrategy,
-  Profile,
-  VerifyCallback,
-} from "passport-google-oauth20";
-import { User } from "../modules/user/user.model";
-import { Role, IsActive } from "../modules/user/user.constant";
-import { envVariables } from "../config/env";
-import {
-  UserValidationResult,
-  validateUserStatus,
-} from "../middleware/validateUserStatus";
 
 passport.use(
   new GoogleStrategy(
@@ -147,7 +138,7 @@ passport.use(
           user = await User.findById(user._id); // refresh
         }
 
-        return done(null, user as IUSER); // ✅ return your app user, not the Google profile
+        return done(null, user as IUSER); // return your app user, not the Google profile
       } catch (err) {
         console.error("Google strategy error:", err);
         return done(err as Error);

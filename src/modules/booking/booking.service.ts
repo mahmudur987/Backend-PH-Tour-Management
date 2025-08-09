@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import AppError from "../../errorHandler/AppError";
 import { Tour } from "../tour/tour.model";
 import { User } from "../user/user.model";

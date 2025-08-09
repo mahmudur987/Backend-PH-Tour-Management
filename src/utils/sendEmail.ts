@@ -14,14 +14,15 @@ interface sendEmailOptions {
     contentType: string;
   }[];
 }
+
 const transport = nodemailer.createTransport({
   secure: true,
   auth: {
-    user: envVariables.SMTP_USER,
-    pass: envVariables.SMTP_PASS,
+    user: envVariables.SMTP_USER as string,
+    pass: envVariables.SMTP_PASS as string,
   },
-  port: envVariables.SMTP_PORT,
-  host: envVariables.SMTP_HOST, // ✅ host should be string
+  port: parseInt(envVariables.SMTP_PORT as string, 10),
+  host: envVariables.SMTP_HOST as string, // ✅ host should be string
 });
 
 export const sendmail = async ({

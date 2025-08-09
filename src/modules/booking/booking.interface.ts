@@ -13,4 +13,6 @@ export interface IBooking {
   payment?: Types.ObjectId;
   guestCount: number;
   bookingStatus: BookingStatus;
+  createdAt?: Date;
+  updatedAt?: Date;
 }

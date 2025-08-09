@@ -1,5 +1,3 @@
-import e from "express";
-
 function updateImages(
   images: string[] | null,
   newImages: string[] | null,

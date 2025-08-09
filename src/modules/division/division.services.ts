@@ -10,7 +10,7 @@ const getAllDivisions = async () => {
   const result = await Division.find({});
   return result;
 };
-const getDivisionById = async (id) => {
+const getDivisionById = async (id: string) => {
   const result = await Division.findById(id);
   return result;
 };
