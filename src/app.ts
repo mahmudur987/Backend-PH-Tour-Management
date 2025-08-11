@@ -21,7 +21,25 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+const whitelist = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://example.com",
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || whitelist.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1/", router);
 
