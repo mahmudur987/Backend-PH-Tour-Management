@@ -16,7 +16,7 @@ router.post(
 router.get("/", userController.getAllUsers);
 router.patch(
   "/:id",
-  verifyAdmin(...Object.values(Role)),
+  verifyAdmin(Role.ADMIN, Role.SUPER_ADMIN),
   validateRequest(updateUserZodSchema),
   userController.updateUser
 );

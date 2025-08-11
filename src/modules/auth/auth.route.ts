@@ -47,7 +47,6 @@ route.get("/google/callback", (req, res, next) => {
       }
 
       if (!user) {
-        // Handle error message from `done(null, false, { message: "..." })`
         return res.redirect(
           `${envVariables.FRONT_END_URL}/login?error=${encodeURIComponent(
             info?.message || "Google login failed"
@@ -55,15 +54,10 @@ route.get("/google/callback", (req, res, next) => {
         );
       }
 
-      // Manually attach user to req for controller
       req.user = user;
       return authController.googleCallbackController(req, res, next);
     }
   )(req, res, next);
 });
-// route.get(
-//   "/google/callback",
-//   passport.authenticate("google", { failureRedirect: "/login" }),
-//   authController.googleCallbackController
-// );
+
 export const authRoute = route;

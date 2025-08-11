@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { tourTypeController } from "./tourType.controleer";
+import { tourTypeController } from "./tourType.controller";
 
 const route = Router();
 
@@ -10,19 +10,3 @@ route.put("/:id", tourTypeController.updateTourType);
 route.delete("/:id", tourTypeController.deleteTourType);
 
 export const tourTypeRoute = route;
-
-/**
- * Sample data
- */
-
-export const sampleTourTypeData = [
-  {
-    name: "Beach Relaxation",
-  },
-  {
-    name: "City Tour",
-  },
-  {
-    name: "Mountain Trekking",
-  },
-];

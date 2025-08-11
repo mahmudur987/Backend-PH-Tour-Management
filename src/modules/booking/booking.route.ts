@@ -9,7 +9,7 @@ const router = Router();
 
 router.post(
   "/createBooking",
-  verifyAdmin(...Object.values(Role)),
+  verifyAdmin(Role.ADMIN, Role.SUPER_ADMIN),
   validateRequest(createBookingZodSchema),
   bookingController.createBooking
 );
@@ -20,15 +20,23 @@ router.get(
 );
 router.get(
   "/user-booking/:id",
-  verifyAdmin(...Object.values(Role)),
+  verifyAdmin(Role.ADMIN, Role.SUPER_ADMIN),
   bookingController.getBookingById
 );
 router.get(
   "/userBookings",
-  verifyAdmin(...Object.values(Role)),
+  verifyAdmin(Role.ADMIN, Role.SUPER_ADMIN),
   bookingController.getUserBookings
 );
-router.patch("/:id", verifyAdmin("Admin"), bookingController.updateBooking);
-router.delete("/:id", verifyAdmin("Admin"), bookingController.deleteBooking);
+router.patch(
+  "/:id",
+  verifyAdmin(Role.ADMIN, Role.SUPER_ADMIN),
+  bookingController.updateBooking
+);
+router.delete(
+  "/:id",
+  verifyAdmin(Role.ADMIN, Role.SUPER_ADMIN),
+  bookingController.deleteBooking
+);
 
 export const bookingRoute = router;
