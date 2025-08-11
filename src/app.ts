@@ -21,25 +21,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.json());
 app.use(cookieParser());
-const whitelist = [
-  "http://localhost:3000",
-  "http://localhost:3001",
-  "https://example.com",
-];
-
 app.use(
   cors({
-    origin: (origin, callback) => {
-      if (!origin || whitelist.indexOf(origin) !== -1) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
+    origin: [
+      "http://localhost:3000", // Local frontend
+      "https://your-frontend.vercel.app", // Deployed frontend
+    ],
+    credentials: true, // if you're using cookies/auth headers
   })
 );
-
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1/", router);
 
