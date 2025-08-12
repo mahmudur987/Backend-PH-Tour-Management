@@ -10,6 +10,7 @@ import AppError from "../../errorHandler/AppError";
 import { createUserToken } from "../../utils/createUserToken";
 import { envVariables } from "../../config/env.config";
 import passport from "passport";
+import { get } from "http";
 
 const credentialLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -25,11 +26,13 @@ const credentialLogin = catchAsync(
 
       res.cookie("refreshToken", result.refreshToken, {
         httpOnly: true,
-        secure: false,
+        secure: true,
+        sameSite: "none",
       });
       res.cookie("accessToken", result.accessToken, {
         httpOnly: true,
-        secure: false,
+        secure: true,
+        sameSite: "none",
       });
 
       sendResponse(res, {
@@ -183,6 +186,18 @@ const logOut = catchAsync(
     });
   }
 );
+const getProfile = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decodedToken = req.user as JwtPayload;
+    const result = await authServices.getProfile(decodedToken);
+    sendResponse(res, {
+      statusCode: statusCode.CREATED,
+      success: true,
+      message: "Profile fetched successfully",
+      data: result,
+    });
+  }
+);
 
 export const authController = {
   credentialLogin,
@@ -193,4 +208,5 @@ export const authController = {
   setPassword,
   forgetPassword,
   resetPassword,
+  getProfile,
 };

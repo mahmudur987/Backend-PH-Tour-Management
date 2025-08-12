@@ -216,6 +216,15 @@ export const resetPassword = async (
     message: "Password has been reset successfully.",
   };
 };
+
+const getProfile = async (decodedToken: JwtPayload) => {
+  const user = await User.findById(decodedToken._id);
+  if (!user) {
+    throw new AppError(statusCode.NOT_FOUND, "User not found.");
+  }
+  return user;
+};
+
 export const authServices = {
   credentialLogin,
   getNewAccessToken,
@@ -223,4 +232,5 @@ export const authServices = {
   changePassword,
   setPassword,
   forgetPassword,
+  getProfile,
 };

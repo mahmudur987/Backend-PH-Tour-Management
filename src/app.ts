@@ -10,16 +10,16 @@ import "./config/passport";
 
 const app = express();
 
-// // ✅ CORS options
-// const corsOptions = {
-//   origin: [
-//     "http://localhost:3000", // Local frontend
-//     "https://your-frontend.vercel.app", // Deployed frontend
-//   ],
-//   credentials: true, // allow cookies/auth headers
-// };
+// ✅ CORS options
+const corsOptions = {
+  origin: [
+    "http://localhost:3000", // Local frontend
+    "https://your-frontend.vercel.app", // Deployed frontend
+  ],
+  credentials: true, // allow cookies/auth headers
+};
 
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Sessions + Passport
 app.use(

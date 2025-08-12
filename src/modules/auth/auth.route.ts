@@ -7,7 +7,11 @@ import passport from "passport";
 import { envVariables } from "../../config/env.config";
 
 const route = Router();
-
+route.get(
+  "/profile",
+  verifyAdmin(...Object.values(Role)),
+  authController.getProfile
+);
 route.post("/login", authController.credentialLogin);
 route.post("/refreshToken", authController.getNewAccessToken);
 route.post("/logout", authController.logOut);
