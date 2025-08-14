@@ -9,7 +9,7 @@ import { Role } from "../user/user.interface";
 const router = Router();
 
 router.post(
-  "/createDivisions",
+  "/createDivision",
   multerUpload.single("file"),
   validateRequest(createDivisionZodSchema),
   CheckRole(Role.ADMIN, Role.SUPER_ADMIN),
