@@ -21,6 +21,37 @@ const createDivisions = catchAsync(
     });
   }
 );
+const updateDivisions = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const payload: IDivision = {
+      ...req.body,
+      thumbnail: req.file?.path,
+    };
+
+    const result = await divisionServices.updateDivision(id, payload);
+    sendResponse(res, {
+      statusCode: statusCode.CREATED,
+      success: true,
+      message: "Division updated successfully",
+      data: result,
+    });
+  }
+);
+
+const deleteDivisions = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    const result = await divisionServices.deleteDivision(id);
+    sendResponse(res, {
+      statusCode: statusCode.CREATED,
+      success: true,
+      message: "Division deleted successfully",
+      data: result,
+    });
+  }
+);
+
 const getAllDivisions = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await divisionServices.getAllDivisions();
@@ -49,4 +80,6 @@ export const divisionController = {
   createDivisions,
   getAllDivisions,
   getDivisionById,
+  updateDivisions,
+  deleteDivisions,
 };
