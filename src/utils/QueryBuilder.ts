@@ -1,6 +1,7 @@
 import { Query } from "mongoose";
 import { excludeField } from "../app/constants";
-
+export const tourSearchableFields = ["title", "description", "location"];
+export const tourTypeSearchableFields = ["name"];
 export class QueryBuilder<T> {
   public modelQuery: Query<T[], T>;
   public readonly query: Record<string, string>;
