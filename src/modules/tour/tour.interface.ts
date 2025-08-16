@@ -10,6 +10,8 @@ export interface ITour {
   startDate?: Date;
   endDate?: Date;
   included?: string[];
+  departureLocation: string;
+  arrivalLocation: string;
   excluded?: string[];
   amenities?: string[];
   tourPlan?: string[];

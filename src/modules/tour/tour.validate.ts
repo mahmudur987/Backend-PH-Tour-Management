@@ -47,6 +47,8 @@ export const createTourZodSchema = z.object({
       message: "End date must be a valid date string",
     })
     .optional(),
+  departureLocation: z.string().min(1, "Departure location is required"),
+  arrivalLocation: z.string().min(1, "Arrival location is required"),
 
   included: z
     .array(z.string({ message: "Each item in 'included' must be a string" }))
