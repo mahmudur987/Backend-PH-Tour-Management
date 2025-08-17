@@ -9,7 +9,7 @@ const router = Router();
 
 router.post(
   "/createBooking",
-  verifyAdmin(Role.ADMIN, Role.SUPER_ADMIN),
+  verifyAdmin(...Object.values(Role)),
   validateRequest(createBookingZodSchema),
   bookingController.createBooking
 );
