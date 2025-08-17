@@ -54,12 +54,15 @@ const deleteDivisions = catchAsync(
 
 const getAllDivisions = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await divisionServices.getAllDivisions();
+    const result = await divisionServices.getAllDivisions(
+      req.query as Record<string, string>
+    );
     sendResponse(res, {
       statusCode: statusCode.CREATED,
       success: true,
-      message: "Division created successfully",
-      data: result,
+      message: "Division fetched successfully",
+      meta: result.meta,
+      data: result.data,
     });
   }
 );

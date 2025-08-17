@@ -1,3 +1,4 @@
+import { QueryBuilder } from "../../utils/QueryBuilder";
 import { ITourType } from "./tourType.interface";
 import { TourType } from "./tourType.model";
 
@@ -6,9 +7,20 @@ const createTourType = async (payload: ITourType) => {
   return result;
 };
 
-const getAllTourType = async () => {
-  const result = await TourType.find({});
-  return result;
+const getAllTourType = async (query: Record<string, string>) => {
+  const builder = new QueryBuilder(TourType.find(), query);
+  const divisions = await builder
+    .filter()
+    .search(["name"])
+    .sort()
+    .fields()
+    .paginate()
+    .build();
+  const meta = await builder.getMeta();
+  return {
+    data: divisions,
+    meta,
+  };
 };
 
 const updateTourTypeById = async (id: string, payload: Partial<ITourType>) => {
